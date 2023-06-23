@@ -7,14 +7,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-
-'use strict';
-
-if (process.env.NODE_ENV !== "production") {
-  (function() {
-
-          'use strict';
-
+import * as React from "./react.mjs";
+import * as Scheduler from './scheduler.mjs';
 /* global __REACT_DEVTOOLS_GLOBAL_HOOK__ */
 if (
   typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== 'undefined' &&
@@ -23,11 +17,7 @@ if (
 ) {
   __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
 }
-          var React = require('react');
-var Scheduler = require('scheduler');
-
 var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
-
 var suppressWarning = false;
 function setSuppressWarning(newSuppressWarning) {
   {
@@ -29842,27 +29832,24 @@ var foundDevTools = injectIntoDevTools({
     }
   }
 }
-
-exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = Internals;
-exports.createPortal = createPortal$1;
-exports.createRoot = createRoot$1;
-exports.findDOMNode = findDOMNode;
-exports.flushSync = flushSync$1;
-exports.hydrate = hydrate;
-exports.hydrateRoot = hydrateRoot$1;
-exports.render = render;
-exports.unmountComponentAtNode = unmountComponentAtNode;
-exports.unstable_batchedUpdates = batchedUpdates$1;
-exports.unstable_renderSubtreeIntoContainer = renderSubtreeIntoContainer;
-exports.version = ReactVersion;
-          /* global __REACT_DEVTOOLS_GLOBAL_HOOK__ */
+export {
+  Internals as __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
+  createPortal$1 as createPortal,
+  createRoot$1 as createRoot,
+  findDOMNode,
+  flushSync$1 as flushSync,
+  hydrate,
+  hydrateRoot$1 as hydrateRoot,
+  render,
+  unmountComponentAtNode,
+  batchedUpdates$1 as unstable_batchedUpdates,
+  renderSubtreeIntoContainer as unstable_renderSubtreeIntoContainer,
+  ReactVersion as version,
+}
+/* global __REACT_DEVTOOLS_GLOBAL_HOOK__ */
 if (
   typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== 'undefined' &&
-  typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop ===
-    'function'
+  typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === 'function'
 ) {
   __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(new Error());
-}
-        
-  })();
 }

@@ -7,23 +7,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-
-'use strict';
-
-if (process.env.NODE_ENV !== "production") {
-  (function() {
-
-          'use strict';
-
 /* global __REACT_DEVTOOLS_GLOBAL_HOOK__ */
 if (
   typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== 'undefined' &&
-  typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart ===
-    'function'
+  typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === 'function'
 ) {
   __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
 }
-          var enableSchedulerDebugging = false;
+var enableSchedulerDebugging = false;
 var enableProfiling = false;
 var frameYieldMs = 5;
 
@@ -117,14 +108,11 @@ var IdlePriority = 5;
 
 function markTaskErrored(task, ms) {
 }
-
 /* eslint-disable no-var */
-
+/*
 var hasPerformanceNow = typeof performance === 'object' && typeof performance.now === 'function';
-
 if (hasPerformanceNow) {
   var localPerformance = performance;
-
   exports.unstable_now = function () {
     return localPerformance.now();
   };
@@ -135,7 +123,14 @@ if (hasPerformanceNow) {
   exports.unstable_now = function () {
     return localDate.now() - initialTime;
   };
-} // Max 31 bit integer. The max integer size in V8 for 32-bit systems.
+}
+*/
+// implying first case... should just be performance.now() everywhere + polyfill anyway
+var localPerformance = performance;
+export function unstable_now() {
+  return localPerformance.now();
+}
+// Max 31 bit integer. The max integer size in V8 for 32-bit systems.
 // Math.pow(2, 30) - 1
 // 0b111111111111111111111111111111
 
@@ -227,7 +222,7 @@ function flushWork(hasTimeRemaining, initialTime) {
         return workLoop(hasTimeRemaining, initialTime);
       } catch (error) {
         if (currentTask !== null) {
-          var currentTime = exports.unstable_now();
+          var currentTime = unstable_now();
           markTaskErrored(currentTask, currentTime);
           currentTask.isQueued = false;
         }
@@ -264,7 +259,7 @@ function workLoop(hasTimeRemaining, initialTime) {
       var didUserCallbackTimeout = currentTask.expirationTime <= currentTime;
 
       var continuationCallback = callback(didUserCallbackTimeout);
-      currentTime = exports.unstable_now();
+      currentTime = unstable_now();
 
       if (typeof continuationCallback === 'function') {
         currentTask.callback = continuationCallback;
@@ -363,7 +358,7 @@ function unstable_wrapCallback(callback) {
 }
 
 function unstable_scheduleCallback(priorityLevel, callback, options) {
-  var currentTime = exports.unstable_now();
+  var currentTime = unstable_now();
   var startTime;
 
   if (typeof options === 'object' && options !== null) {
@@ -483,7 +478,7 @@ var frameInterval = frameYieldMs;
 var startTime = -1;
 
 function shouldYieldToHost() {
-  var timeElapsed = exports.unstable_now() - startTime;
+  var timeElapsed = unstable_now() - startTime;
 
   if (timeElapsed < frameInterval) {
     // The main thread has only been blocked for a really short amount of time;
@@ -516,7 +511,7 @@ function forceFrameRate(fps) {
 
 var performWorkUntilDeadline = function () {
   if (scheduledHostCallback !== null) {
-    var currentTime = exports.unstable_now(); // Keep track of the start time so we can measure how long the main thread
+    var currentTime = unstable_now(); // Keep track of the start time so we can measure how long the main thread
     // has been blocked.
 
     startTime = currentTime;
@@ -591,7 +586,7 @@ function requestHostCallback(callback) {
 
 function requestHostTimeout(callback, ms) {
   taskTimeoutID = localSetTimeout(function () {
-    callback(exports.unstable_now());
+    callback(unstable_now());
   }, ms);
 }
 
@@ -602,33 +597,31 @@ function cancelHostTimeout() {
 
 var unstable_requestPaint = requestPaint;
 var unstable_Profiling =  null;
-
-exports.unstable_IdlePriority = IdlePriority;
-exports.unstable_ImmediatePriority = ImmediatePriority;
-exports.unstable_LowPriority = LowPriority;
-exports.unstable_NormalPriority = NormalPriority;
-exports.unstable_Profiling = unstable_Profiling;
-exports.unstable_UserBlockingPriority = UserBlockingPriority;
-exports.unstable_cancelCallback = unstable_cancelCallback;
-exports.unstable_continueExecution = unstable_continueExecution;
-exports.unstable_forceFrameRate = forceFrameRate;
-exports.unstable_getCurrentPriorityLevel = unstable_getCurrentPriorityLevel;
-exports.unstable_getFirstCallbackNode = unstable_getFirstCallbackNode;
-exports.unstable_next = unstable_next;
-exports.unstable_pauseExecution = unstable_pauseExecution;
-exports.unstable_requestPaint = unstable_requestPaint;
-exports.unstable_runWithPriority = unstable_runWithPriority;
-exports.unstable_scheduleCallback = unstable_scheduleCallback;
-exports.unstable_shouldYield = shouldYieldToHost;
-exports.unstable_wrapCallback = unstable_wrapCallback;
-          /* global __REACT_DEVTOOLS_GLOBAL_HOOK__ */
+export {
+  IdlePriority as unstable_IdlePriority,
+  ImmediatePriority as unstable_ImmediatePriority,
+  LowPriority as unstable_LowPriority,
+  NormalPriority as unstable_NormalPriority,
+  unstable_Profiling,
+  UserBlockingPriority as unstable_UserBlockingPriority,
+  unstable_cancelCallback,
+  unstable_continueExecution,
+  forceFrameRate as unstable_forceFrameRate,
+  unstable_getCurrentPriorityLevel,
+  unstable_getFirstCallbackNode,
+  unstable_next,
+  unstable_pauseExecution,
+  unstable_requestPaint,
+  unstable_runWithPriority,
+  unstable_scheduleCallback,
+  shouldYieldToHost as unstable_shouldYield,
+  unstable_wrapCallback,
+}
+/* global __REACT_DEVTOOLS_GLOBAL_HOOK__ */
 if (
   typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== 'undefined' &&
   typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop ===
     'function'
 ) {
   __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(new Error());
-}
-        
-  })();
 }
