@@ -17,7 +17,6 @@ if (
 var enableSchedulerDebugging = false;
 var enableProfiling = false;
 var frameYieldMs = 5;
-
 function push(heap, node) {
   var index = heap.length;
   heap.push(node);
@@ -30,25 +29,19 @@ function pop(heap) {
   if (heap.length === 0) {
     return null;
   }
-
   var first = heap[0];
   var last = heap.pop();
-
   if (last !== first) {
     heap[0] = last;
     siftDown(heap, last, 0);
   }
-
   return first;
 }
-
 function siftUp(heap, node, i) {
   var index = i;
-
   while (index > 0) {
     var parentIndex = index - 1 >>> 1;
     var parent = heap[parentIndex];
-
     if (compare(parent, node) > 0) {
       // The parent is larger. Swap positions.
       heap[parentIndex] = node;
@@ -60,18 +53,15 @@ function siftUp(heap, node, i) {
     }
   }
 }
-
 function siftDown(heap, node, i) {
   var index = i;
   var length = heap.length;
   var halfLength = length >>> 1;
-
   while (index < halfLength) {
     var leftIndex = (index + 1) * 2 - 1;
     var left = heap[leftIndex];
     var rightIndex = leftIndex + 1;
     var right = heap[rightIndex]; // If the left or right node is smaller, swap with the smaller of those.
-
     if (compare(left, node) < 0) {
       if (rightIndex < length && compare(right, left) < 0) {
         heap[index] = right;
@@ -92,20 +82,17 @@ function siftDown(heap, node, i) {
     }
   }
 }
-
 function compare(a, b) {
   // Compare sort index first, then task id.
   var diff = a.sortIndex - b.sortIndex;
   return diff !== 0 ? diff : a.id - b.id;
 }
-
 // TODO: Use symbols?
 var ImmediatePriority = 1;
 var UserBlockingPriority = 2;
 var NormalPriority = 3;
 var LowPriority = 4;
 var IdlePriority = 5;
-
 function markTaskErrored(task, ms) {
 }
 /* eslint-disable no-var */
@@ -119,7 +106,6 @@ if (hasPerformanceNow) {
 } else {
   var localDate = Date;
   var initialTime = localDate.now();
-
   exports.unstable_now = function () {
     return localDate.now() - initialTime;
   };
@@ -133,39 +119,27 @@ export function unstable_now() {
 // Max 31 bit integer. The max integer size in V8 for 32-bit systems.
 // Math.pow(2, 30) - 1
 // 0b111111111111111111111111111111
-
-
 var maxSigned31BitInt = 1073741823; // Times out immediately
-
 var IMMEDIATE_PRIORITY_TIMEOUT = -1; // Eventually times out
-
 var USER_BLOCKING_PRIORITY_TIMEOUT = 250;
 var NORMAL_PRIORITY_TIMEOUT = 5000;
 var LOW_PRIORITY_TIMEOUT = 10000; // Never times out
-
 var IDLE_PRIORITY_TIMEOUT = maxSigned31BitInt; // Tasks are stored on a min heap
-
 var taskQueue = [];
 var timerQueue = []; // Incrementing id counter. Used to maintain insertion order.
-
 var taskIdCounter = 1; // Pausing the scheduler is useful for debugging.
 var currentTask = null;
 var currentPriorityLevel = NormalPriority; // This is set while performing work, to prevent re-entrance.
-
 var isPerformingWork = false;
 var isHostCallbackScheduled = false;
 var isHostTimeoutScheduled = false; // Capture local references to native APIs, in case a polyfill overrides them.
-
 var localSetTimeout = typeof setTimeout === 'function' ? setTimeout : null;
 var localClearTimeout = typeof clearTimeout === 'function' ? clearTimeout : null;
 var localSetImmediate = typeof setImmediate !== 'undefined' ? setImmediate : null; // IE and Node.js + jsdom
-
 var isInputPending = typeof navigator !== 'undefined' && navigator.scheduling !== undefined && navigator.scheduling.isInputPending !== undefined ? navigator.scheduling.isInputPending.bind(navigator.scheduling) : null;
-
 function advanceTimers(currentTime) {
   // Check for tasks that are no longer delayed and add them to the queue.
   var timer = peek(timerQueue);
-
   while (timer !== null) {
     if (timer.callback === null) {
       // Timer was cancelled.
@@ -179,43 +153,33 @@ function advanceTimers(currentTime) {
       // Remaining timers are pending.
       return;
     }
-
     timer = peek(timerQueue);
   }
 }
-
 function handleTimeout(currentTime) {
   isHostTimeoutScheduled = false;
   advanceTimers(currentTime);
-
   if (!isHostCallbackScheduled) {
     if (peek(taskQueue) !== null) {
       isHostCallbackScheduled = true;
       requestHostCallback(flushWork);
     } else {
       var firstTimer = peek(timerQueue);
-
       if (firstTimer !== null) {
         requestHostTimeout(handleTimeout, firstTimer.startTime - currentTime);
       }
     }
   }
 }
-
 function flushWork(hasTimeRemaining, initialTime) {
-
-
   isHostCallbackScheduled = false;
-
   if (isHostTimeoutScheduled) {
     // We scheduled a timeout but it's no longer needed. Cancel it.
     isHostTimeoutScheduled = false;
     cancelHostTimeout();
   }
-
   isPerformingWork = true;
   var previousPriorityLevel = currentPriorityLevel;
-
   try {
     if (enableProfiling) {
       try {
@@ -226,7 +190,6 @@ function flushWork(hasTimeRemaining, initialTime) {
           markTaskErrored(currentTask, currentTime);
           currentTask.isQueued = false;
         }
-
         throw error;
       }
     } else {
@@ -239,59 +202,45 @@ function flushWork(hasTimeRemaining, initialTime) {
     isPerformingWork = false;
   }
 }
-
 function workLoop(hasTimeRemaining, initialTime) {
   var currentTime = initialTime;
   advanceTimers(currentTime);
   currentTask = peek(taskQueue);
-
   while (currentTask !== null && !(enableSchedulerDebugging )) {
     if (currentTask.expirationTime > currentTime && (!hasTimeRemaining || shouldYieldToHost())) {
       // This currentTask hasn't expired, and we've reached the deadline.
       break;
     }
-
     var callback = currentTask.callback;
-
     if (typeof callback === 'function') {
       currentTask.callback = null;
       currentPriorityLevel = currentTask.priorityLevel;
       var didUserCallbackTimeout = currentTask.expirationTime <= currentTime;
-
       var continuationCallback = callback(didUserCallbackTimeout);
       currentTime = unstable_now();
-
       if (typeof continuationCallback === 'function') {
         currentTask.callback = continuationCallback;
       } else {
-
         if (currentTask === peek(taskQueue)) {
           pop(taskQueue);
         }
       }
-
       advanceTimers(currentTime);
     } else {
       pop(taskQueue);
     }
-
     currentTask = peek(taskQueue);
   } // Return whether there's additional work
-
-
   if (currentTask !== null) {
     return true;
   } else {
     var firstTimer = peek(timerQueue);
-
     if (firstTimer !== null) {
       requestHostTimeout(handleTimeout, firstTimer.startTime - currentTime);
     }
-
     return false;
   }
 }
-
 function unstable_runWithPriority(priorityLevel, eventHandler) {
   switch (priorityLevel) {
     case ImmediatePriority:
@@ -300,24 +249,19 @@ function unstable_runWithPriority(priorityLevel, eventHandler) {
     case LowPriority:
     case IdlePriority:
       break;
-
     default:
       priorityLevel = NormalPriority;
   }
-
   var previousPriorityLevel = currentPriorityLevel;
   currentPriorityLevel = priorityLevel;
-
   try {
     return eventHandler();
   } finally {
     currentPriorityLevel = previousPriorityLevel;
   }
 }
-
 function unstable_next(eventHandler) {
   var priorityLevel;
-
   switch (currentPriorityLevel) {
     case ImmediatePriority:
     case UserBlockingPriority:
@@ -325,30 +269,25 @@ function unstable_next(eventHandler) {
       // Shift down to normal priority
       priorityLevel = NormalPriority;
       break;
-
     default:
       // Anything lower than normal priority should remain at the current level.
       priorityLevel = currentPriorityLevel;
       break;
   }
-
   var previousPriorityLevel = currentPriorityLevel;
   currentPriorityLevel = priorityLevel;
-
   try {
     return eventHandler();
   } finally {
     currentPriorityLevel = previousPriorityLevel;
   }
 }
-
 function unstable_wrapCallback(callback) {
   var parentPriorityLevel = currentPriorityLevel;
   return function () {
     // This is a fork of runWithPriority, inlined for performance.
     var previousPriorityLevel = currentPriorityLevel;
     currentPriorityLevel = parentPriorityLevel;
-
     try {
       return callback.apply(this, arguments);
     } finally {
@@ -356,14 +295,11 @@ function unstable_wrapCallback(callback) {
     }
   };
 }
-
 function unstable_scheduleCallback(priorityLevel, callback, options) {
   var currentTime = unstable_now();
   var startTime;
-
   if (typeof options === 'object' && options !== null) {
     var delay = options.delay;
-
     if (typeof delay === 'number' && delay > 0) {
       startTime = currentTime + delay;
     } else {
@@ -372,32 +308,25 @@ function unstable_scheduleCallback(priorityLevel, callback, options) {
   } else {
     startTime = currentTime;
   }
-
   var timeout;
-
   switch (priorityLevel) {
     case ImmediatePriority:
       timeout = IMMEDIATE_PRIORITY_TIMEOUT;
       break;
-
     case UserBlockingPriority:
       timeout = USER_BLOCKING_PRIORITY_TIMEOUT;
       break;
-
     case IdlePriority:
       timeout = IDLE_PRIORITY_TIMEOUT;
       break;
-
     case LowPriority:
       timeout = LOW_PRIORITY_TIMEOUT;
       break;
-
     case NormalPriority:
     default:
       timeout = NORMAL_PRIORITY_TIMEOUT;
       break;
   }
-
   var expirationTime = startTime + timeout;
   var newTask = {
     id: taskIdCounter++,
@@ -407,12 +336,10 @@ function unstable_scheduleCallback(priorityLevel, callback, options) {
     expirationTime: expirationTime,
     sortIndex: -1
   };
-
   if (startTime > currentTime) {
     // This is a delayed task.
     newTask.sortIndex = startTime;
     push(timerQueue, newTask);
-
     if (peek(taskQueue) === null && newTask === peek(timerQueue)) {
       // All tasks are delayed, and this is the task with the earliest delay.
       if (isHostTimeoutScheduled) {
@@ -421,86 +348,63 @@ function unstable_scheduleCallback(priorityLevel, callback, options) {
       } else {
         isHostTimeoutScheduled = true;
       } // Schedule a timeout.
-
-
       requestHostTimeout(handleTimeout, startTime - currentTime);
     }
   } else {
     newTask.sortIndex = expirationTime;
     push(taskQueue, newTask);
     // wait until the next time we yield.
-
-
     if (!isHostCallbackScheduled && !isPerformingWork) {
       isHostCallbackScheduled = true;
       requestHostCallback(flushWork);
     }
   }
-
   return newTask;
 }
-
 function unstable_pauseExecution() {
 }
-
 function unstable_continueExecution() {
-
   if (!isHostCallbackScheduled && !isPerformingWork) {
     isHostCallbackScheduled = true;
     requestHostCallback(flushWork);
   }
 }
-
 function unstable_getFirstCallbackNode() {
   return peek(taskQueue);
 }
-
 function unstable_cancelCallback(task) {
   // remove from the queue because you can't remove arbitrary nodes from an
   // array based heap, only the first one.)
-
-
   task.callback = null;
 }
-
 function unstable_getCurrentPriorityLevel() {
   return currentPriorityLevel;
 }
-
 var isMessageLoopRunning = false;
 var scheduledHostCallback = null;
 var taskTimeoutID = -1; // Scheduler periodically yields in case there is other work on the main
 // thread, like user events. By default, it yields multiple times per frame.
 // It does not attempt to align with frame boundaries, since most tasks don't
 // need to be frame aligned; for those that do, use requestAnimationFrame.
-
 var frameInterval = frameYieldMs;
 var startTime = -1;
-
 function shouldYieldToHost() {
   var timeElapsed = unstable_now() - startTime;
-
   if (timeElapsed < frameInterval) {
     // The main thread has only been blocked for a really short amount of time;
     // smaller than a single frame. Don't yield yet.
     return false;
   } // The main thread has been blocked for a non-negligible amount of time. We
-
-
   return true;
 }
-
 function requestPaint() {
-
 }
-
 function forceFrameRate(fps) {
   if (fps < 0 || fps > 125) {
     // Using console['error'] to evade Babel and ESLint
     console['error']('forceFrameRate takes a positive int between 0 and 125, ' + 'forcing frame rates higher than 125 fps is not supported');
     return;
   }
-
   if (fps > 0) {
     frameInterval = Math.floor(1000 / fps);
   } else {
@@ -508,12 +412,10 @@ function forceFrameRate(fps) {
     frameInterval = frameYieldMs;
   }
 }
-
 var performWorkUntilDeadline = function () {
   if (scheduledHostCallback !== null) {
     var currentTime = unstable_now(); // Keep track of the start time so we can measure how long the main thread
     // has been blocked.
-
     startTime = currentTime;
     var hasTimeRemaining = true; // If a scheduler task throws, exit the current browser task so the
     // error can be observed.
@@ -521,9 +423,7 @@ var performWorkUntilDeadline = function () {
     // Intentionally not using a try-catch, since that makes some debugging
     // techniques harder. Instead, if `scheduledHostCallback` errors, then
     // `hasMoreWork` will remain true, and we'll continue the work loop.
-
     var hasMoreWork = true;
-
     try {
       hasMoreWork = scheduledHostCallback(hasTimeRemaining, currentTime);
     } finally {
@@ -540,9 +440,7 @@ var performWorkUntilDeadline = function () {
     isMessageLoopRunning = false;
   } // Yielding to the browser will give it a chance to paint, so we can
 };
-
 var schedulePerformWorkUntilDeadline;
-
 if (typeof localSetImmediate === 'function') {
   // Node.js and old IE.
   // There's a few reasons for why we prefer setImmediate.
@@ -564,7 +462,6 @@ if (typeof localSetImmediate === 'function') {
   var channel = new MessageChannel();
   var port = channel.port2;
   channel.port1.onmessage = performWorkUntilDeadline;
-
   schedulePerformWorkUntilDeadline = function () {
     port.postMessage(null);
   };
@@ -574,27 +471,22 @@ if (typeof localSetImmediate === 'function') {
     localSetTimeout(performWorkUntilDeadline, 0);
   };
 }
-
 function requestHostCallback(callback) {
   scheduledHostCallback = callback;
-
   if (!isMessageLoopRunning) {
     isMessageLoopRunning = true;
     schedulePerformWorkUntilDeadline();
   }
 }
-
 function requestHostTimeout(callback, ms) {
   taskTimeoutID = localSetTimeout(function () {
     callback(unstable_now());
   }, ms);
 }
-
 function cancelHostTimeout() {
   localClearTimeout(taskTimeoutID);
   taskTimeoutID = -1;
 }
-
 var unstable_requestPaint = requestPaint;
 var unstable_Profiling =  null;
 export {
