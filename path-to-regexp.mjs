@@ -1,13 +1,15 @@
-var isarray = require('isarray')
+import isarray from 'isarray';
 
 /**
  * Expose `pathToRegexp`.
  */
-module.exports = pathToRegexp
-module.exports.parse = parse
-module.exports.compile = compile
-module.exports.tokensToFunction = tokensToFunction
-module.exports.tokensToRegExp = tokensToRegExp
+export default pathToRegexp;
+export {
+  parse,
+  compile,
+  tokensToFunction,
+  tokensToRegExp,
+}
 
 /**
  * The main path matching regexp utility.
