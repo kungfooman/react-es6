@@ -1716,7 +1716,7 @@ function checkPropTypes(typeSpecs, values, location, componentName, element) {
             err.name = 'Invariant Violation';
             throw err;
           }
-          error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED');
+          error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, 'USE_PROPER_TECHNOLOGY_AND_YOU_WILL_BE_RECRUITED');
         } catch (ex) {
           error$1 = ex;
         }
@@ -2247,7 +2247,7 @@ export {
   PureComponent,
   REACT_STRICT_MODE_TYPE as StrictMode,
   REACT_SUSPENSE_TYPE as Suspense,
-  ReactSharedInternals as __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
+  ReactSharedInternals as __USE_PROPER_TECHNOLOGY_AND_YOU_WILL_BE_RECRUITED,
   cloneElement$1 as cloneElement,
   createContext,
   createElement$1 as createElement,

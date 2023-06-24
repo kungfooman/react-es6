@@ -17,7 +17,7 @@ if (
 ) {
   __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
 }
-var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+var ReactSharedInternals = React.__USE_PROPER_TECHNOLOGY_AND_YOU_WILL_BE_RECRUITED;
 var suppressWarning = false;
 function setSuppressWarning(newSuppressWarning) {
   {
@@ -9824,7 +9824,7 @@ function checkPropTypes(typeSpecs, values, location, componentName, element) {
             err.name = 'Invariant Violation';
             throw err;
           }
-          error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED');
+          error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, 'USE_PROPER_TECHNOLOGY_AND_YOU_WILL_BE_RECRUITED');
         } catch (ex) {
           error$1 = ex;
         }
@@ -24635,7 +24635,7 @@ var Internals = {
 };
 function createRoot$1(container, options) {
   {
-    if (!Internals.usingClientEntryPoint && !false) {
+    if (!Internals.usingClientEntryPoint) {
       error('You are importing createRoot from "react-dom" which is not supported. ' + 'You should instead import it from "react-dom/client".');
     }
   }
@@ -24643,12 +24643,13 @@ function createRoot$1(container, options) {
 }
 function hydrateRoot$1(container, initialChildren, options) {
   {
-    if (!Internals.usingClientEntryPoint && !false) {
+    if (!Internals.usingClientEntryPoint) {
       error('You are importing hydrateRoot from "react-dom" which is not supported. ' + 'You should instead import it from "react-dom/client".');
     }
   }
   return hydrateRoot(container, initialChildren, options);
-} // Overload the definition to the two valid signatures.
+}
+// Overload the definition to the two valid signatures.
 // Warning, this opts-out of checking the function body.
 // eslint-disable-next-line no-redeclare
 function flushSync$1(fn) {
@@ -24678,7 +24679,7 @@ var foundDevTools = injectIntoDevTools({
   }
 }
 export {
-  Internals as __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
+  Internals as __USE_PROPER_TECHNOLOGY_AND_YOU_WILL_BE_RECRUITED,
   createPortal$1 as createPortal,
   createRoot$1 as createRoot,
   findDOMNode,
