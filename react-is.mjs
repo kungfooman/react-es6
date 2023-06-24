@@ -6,15 +6,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-
-'use strict';
-
-
-
-if (process.env.NODE_ENV !== "production") {
-  (function() {
-'use strict';
-
 // The Symbol used to tag the ReactElement-like types. If there is no native Symbol
 // nor polyfill, then a plain number is used for performance.
 var hasSymbol = typeof Symbol === 'function' && Symbol.for;
@@ -148,34 +139,33 @@ function isStrictMode(object) {
 function isSuspense(object) {
   return typeOf(object) === REACT_SUSPENSE_TYPE;
 }
-
-exports.AsyncMode = AsyncMode;
-exports.ConcurrentMode = ConcurrentMode;
-exports.ContextConsumer = ContextConsumer;
-exports.ContextProvider = ContextProvider;
-exports.Element = Element;
-exports.ForwardRef = ForwardRef;
-exports.Fragment = Fragment;
-exports.Lazy = Lazy;
-exports.Memo = Memo;
-exports.Portal = Portal;
-exports.Profiler = Profiler;
-exports.StrictMode = StrictMode;
-exports.Suspense = Suspense;
-exports.isAsyncMode = isAsyncMode;
-exports.isConcurrentMode = isConcurrentMode;
-exports.isContextConsumer = isContextConsumer;
-exports.isContextProvider = isContextProvider;
-exports.isElement = isElement;
-exports.isForwardRef = isForwardRef;
-exports.isFragment = isFragment;
-exports.isLazy = isLazy;
-exports.isMemo = isMemo;
-exports.isPortal = isPortal;
-exports.isProfiler = isProfiler;
-exports.isStrictMode = isStrictMode;
-exports.isSuspense = isSuspense;
-exports.isValidElementType = isValidElementType;
-exports.typeOf = typeOf;
-  })();
-}
+export {
+  AsyncMode,
+  ConcurrentMode,
+  ContextConsumer,
+  ContextProvider,
+  Element,
+  ForwardRef,
+  Fragment,
+  Lazy,
+  Memo,
+  Portal,
+  Profiler,
+  StrictMode,
+  Suspense,
+  isAsyncMode,
+  isConcurrentMode,
+  isContextConsumer,
+  isContextProvider,
+  isElement,
+  isForwardRef,
+  isFragment,
+  isLazy,
+  isMemo,
+  isPortal,
+  isProfiler,
+  isStrictMode,
+  isSuspense,
+  isValidElementType,
+  typeOf,
+};
