@@ -1,7 +1,4 @@
-'use strict';
-
-var reactIs = require('react-is');
-
+import * as reactIs from './react-is.mjs';
 /**
  * Copyright 2015, Yahoo! Inc.
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
@@ -99,5 +96,4 @@ function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
 
   return targetComponent;
 }
-
-module.exports = hoistNonReactStatics;
+export default hoistNonReactStatics;
