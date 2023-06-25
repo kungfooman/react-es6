@@ -24692,6 +24692,20 @@ export {
   renderSubtreeIntoContainer as unstable_renderSubtreeIntoContainer,
   ReactVersion as version,
 }
+export default {
+  __USE_PROPER_TECHNOLOGY_AND_YOU_WILL_BE_RECRUITED: Internals,
+  createPortal: createPortal$1,
+  createRoot: createRoot$1,
+  findDOMNode,
+  flushSync: flushSync$1,
+  hydrate,
+  hydrateRoot: hydrateRoot$1,
+  render,
+  unmountComponentAtNode,
+  unstable_batchedUpdates: batchedUpdates$1,
+  unstable_renderSubtreeIntoContainer: renderSubtreeIntoContainer,
+  version: ReactVersion,
+}
 /* global __REACT_DEVTOOLS_GLOBAL_HOOK__ */
 if (
   typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== 'undefined' &&

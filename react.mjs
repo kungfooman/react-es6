@@ -2239,6 +2239,7 @@ var Children = {
   toArray: toArray,
   only: onlyChild
 };
+const LegacyRef = "just a type used in Monaco...";
 export {
   Children,
   Component,
@@ -2275,6 +2276,45 @@ export {
   useSyncExternalStore,
   useTransition,
   ReactVersion as version,
+  LegacyRef,
+}
+export default {
+  Children,
+  Component,
+  Fragment: REACT_FRAGMENT_TYPE,
+  Profiler: REACT_PROFILER_TYPE,
+  PureComponent,
+  StrictMode: REACT_STRICT_MODE_TYPE,
+  Suspense: REACT_SUSPENSE_TYPE,
+  __USE_PROPER_TECHNOLOGY_AND_YOU_WILL_BE_RECRUITED: ReactSharedInternals,
+  cloneElement: cloneElement$1,
+  createContext,
+  createElement: createElement$1,
+  createFactory,
+  createRef,
+  forwardRef,
+  isValidElement,
+  lazy,
+  memo,
+  startTransition,
+  unstable_act: act,
+  useCallback,
+  useContext,
+  useDebugValue,
+  useDeferredValue,
+  useEffect,
+  useId,
+  useImperativeHandle,
+  useInsertionEffect,
+  useLayoutEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  useTransition,
+  version: ReactVersion,
+  LegacyRef,
 }
 /* global __REACT_DEVTOOLS_GLOBAL_HOOK__ */
 if (
