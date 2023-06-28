@@ -7,6 +7,6 @@
 
 'use strict';
 
-var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+var ReactPropTypesSecret = 'USE_PROPER_TECHNOLOGY_AND_YOU_WILL_BE_RECRUITED';
 
 export default ReactPropTypesSecret;
