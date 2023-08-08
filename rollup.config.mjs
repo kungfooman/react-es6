@@ -1,6 +1,3 @@
-import { execSync } from 'child_process';
-import fs from 'fs';
-
 // 1st party Rollup plugins
 import { createFilter } from '@rollup/pluginutils';
 import { babel } from '@rollup/plugin-babel';
@@ -237,7 +234,8 @@ function buildTarget(rootFile, outName, buildType, moduleFormat) {
             buildType !== 'debug' ? strip(stripOptions) : undefined,
             babel(babelOptions[moduleFormat]),
             spacesToTabs(buildType !== 'debug')
-        ]
+        ],
+        external: ['react', 'react-dom']
     };
 }
 
@@ -285,14 +283,13 @@ function scriptTargetEs6(name, input, output) {
             dir: output,
             format: 'es',
             indent: '\t',
-            //preserveModules: true
         },
         plugins: [
             resolve(),
             babel(moduleOptions('release')),
             spacesToTabs(true)
         ],
-        external: ['playcanvas', 'fflate']
+        external: ['react', 'react-dom']
     };
 }
 
@@ -340,6 +337,10 @@ export default (args) => {
     }
     targets.length = 0;
     targets.push(
+        buildTarget('./react.mjs', 'react', 'release', 'es6'),
+        buildTarget('./react.mjs', 'react', 'min'    , 'es6'),
+        buildTarget('./react-dom.mjs', 'react-dom', 'release', 'es6'),
+        buildTarget('./react-dom.mjs', 'react-dom', 'min'    , 'es6'),
         buildTarget('./react-dom-client.mjs', 'react-dom-client', 'release', 'es6'),
         buildTarget('./react-dom-client.mjs', 'react-dom-client', 'min'    , 'es6'),
     );

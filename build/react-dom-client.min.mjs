@@ -1,0 +1,1 @@
+import*as t from"react-dom";const n=t.__USE_PROPER_TECHNOLOGY_AND_YOU_WILL_BE_RECRUITED;function i(i,r){n.usingClientEntryPoint=!0;try{return t.createRoot(i,r)}finally{n.usingClientEntryPoint=!1}}function r(i,r,o){n.usingClientEntryPoint=!0;try{return t.hydrateRoot(i,r,o)}finally{n.usingClientEntryPoint=!1}}export{i as createRoot,r as hydrateRoot};
