@@ -1,6 +1,6 @@
 {
   "name": "react-es6",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "ES6/ESM versions of React libraries via importmap",
   "scripts": {
     "build": "rollup -c --environment target:release_es6"

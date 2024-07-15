@@ -8,7 +8,7 @@ This repository ships these ESM-consumable files, which can be used without need
 
 # Installation
 
-`npm i react-es6@1.0.1`
+`npm i react-es6@1.0.2`
 
 # Example script
 
