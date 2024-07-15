@@ -17,5 +17,9 @@ function hydrateRoot(c, h, o) {
     i.usingClientEntryPoint = false;
   }
 }
+var reactDomClient = {
+  createRoot,
+  hydrateRoot
+};
 
-export { createRoot, hydrateRoot };
+export { createRoot, reactDomClient as default, hydrateRoot };

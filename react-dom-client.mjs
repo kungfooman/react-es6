@@ -16,3 +16,4 @@ export function hydrateRoot(c, h, o) {
     i.usingClientEntryPoint = false;
   }
 }
+export default {createRoot, hydrateRoot};
